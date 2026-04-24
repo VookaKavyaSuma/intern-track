@@ -29,7 +29,10 @@ const Signup = () => {
       await register(form.name, form.email, form.password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      setError(
+        err.response?.data?.message ||
+        (err.request ? 'Unable to reach the server. Please check your connection.' : err.message || 'Registration failed. Please try again.')
+      );
     } finally {
       setLoading(false);
     }

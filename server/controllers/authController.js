@@ -51,7 +51,20 @@ const register = async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error.message);
-    res.status(500).json({ message: 'Server error' });
+
+    // MongoDB duplicate key error (e.g. email already exists)
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return res.status(400).json({ message: `An account with this ${field} already exists` });
+    }
+
+    // Mongoose validation error
+    if (error.name === 'ValidationError') {
+      const messages = Object.values(error.errors).map((e) => e.message);
+      return res.status(400).json({ message: messages.join('. ') });
+    }
+
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
@@ -88,7 +101,7 @@ const login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error.message);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: error.message || 'Server error' });
   }
 };
 
