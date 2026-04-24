@@ -395,3 +395,98 @@ a:hover {
   white-space: nowrap;
   border-width: 0;
 }
+
+/* ─── Mobile Responsive ─── */
+
+/* Prevent horizontal overflow */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Touch-friendly tap targets */
+@media (pointer: coarse) {
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  .form-input,
+  .form-select,
+  .form-textarea {
+    font-size: 1rem; /* prevents iOS zoom on focus */
+    min-height: 44px;
+  }
+}
+
+/* ── Small screens (≤768px) ── */
+@media (max-width: 768px) {
+  /* Page layout */
+  .page-container {
+    padding: 1.25rem 1rem;
+  }
+
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.85rem;
+  }
+
+  /* Glass card — disable hover lift on touch */
+  .glass-card:hover {
+    transform: none;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.82rem;
+  }
+
+  .btn-sm {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.78rem;
+  }
+
+  /* Form controls */
+  .form-label {
+    font-size: 0.75rem;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+  }
+
+  .form-textarea {
+    min-height: 100px;
+  }
+
+  /* Badges */
+  .badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
+
+/* ── Extra small screens (≤480px) ── */
+@media (max-width: 480px) {
+  .page-container {
+    padding: 1rem 0.75rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .btn {
+    padding: 0.55rem 1rem;
+    font-size: 0.8rem;
+  }
+}

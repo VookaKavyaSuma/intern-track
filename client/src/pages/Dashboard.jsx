@@ -132,12 +132,21 @@ const Dashboard = () => {
       <Toast toasts={toasts} removeToast={removeToast} />
 
       {/* Header */}
-      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
-        <div>
+      <div
+        className="page-header"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '0.75rem',
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
           <h1 className="page-title">Dashboard</h1>
           <p className="page-subtitle">Track and manage your internship applications</p>
         </div>
-        <button className="btn btn-primary" onClick={openAddModal} id="btn-add-job">
+        <button className="btn btn-primary" onClick={openAddModal} id="btn-add-job" style={{ flexShrink: 0 }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
           </svg>
@@ -146,7 +155,15 @@ const Dashboard = () => {
       </div>
 
       {/* Stats — Clickable Filters */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', marginBottom: '2rem' }} className="stagger-children">
+      <div
+        className="stagger-children"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+          gap: '0.75rem',
+          marginBottom: '2rem',
+        }}
+      >
         {stats.map((s) => (
           <div
             key={s.label}
@@ -154,7 +171,7 @@ const Dashboard = () => {
             onClick={() => toggleFilter(s.label)}
             id={`filter-${s.label.toLowerCase()}`}
             style={{
-              padding: '1.25rem',
+              padding: '1rem',
               textAlign: 'center',
               cursor: 'pointer',
               borderColor: activeFilter === s.label ? 'var(--accent-primary)' : undefined,
@@ -162,10 +179,10 @@ const Dashboard = () => {
               transform: activeFilter === s.label ? 'translateY(-3px)' : undefined,
             }}
           >
-            <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--text-primary)' }}>{s.count}</div>
-            <span className={`badge ${s.badge}`} style={{ marginTop: '0.5rem' }}>{s.label}</span>
+            <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)' }}>{s.count}</div>
+            <span className={`badge ${s.badge}`} style={{ marginTop: '0.4rem' }}>{s.label}</span>
             {activeFilter === s.label && (
-              <div style={{ fontSize: '0.65rem', color: 'var(--accent-primary)', marginTop: '0.4rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+              <div style={{ fontSize: '0.62rem', color: 'var(--accent-primary)', marginTop: '0.35rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 ✓ Filtering
               </div>
             )}
@@ -175,20 +192,20 @@ const Dashboard = () => {
           className="glass-card"
           onClick={() => setActiveFilter(null)}
           style={{
-            padding: '1.25rem',
+            padding: '1rem',
             textAlign: 'center',
             cursor: 'pointer',
             borderColor: activeFilter === null ? 'var(--accent-primary)' : undefined,
           }}
         >
-          <div style={{ fontSize: '2rem', fontWeight: 800 }} className="text-gradient">{jobs.length}</div>
-          <div style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '0.5rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total</div>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800 }} className="text-gradient">{jobs.length}</div>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.4rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total</div>
         </div>
       </div>
 
       {/* Active filter indicator */}
       {activeFilter && (
-        <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
+        <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
             Showing <strong style={{ color: 'var(--text-primary)' }}>{filteredJobs.length}</strong> {activeFilter.toLowerCase()} job{filteredJobs.length !== 1 ? 's' : ''}
           </span>
@@ -208,12 +225,12 @@ const Dashboard = () => {
           {[1, 2, 3].map((i) => <SkeletonCard key={i} />)}
         </div>
       ) : filteredJobs.length === 0 ? (
-        <div className="glass-card animate-fade-in" style={{ padding: '3rem', textAlign: 'center' }}>
-          <span style={{ fontSize: '3rem' }}>{activeFilter ? '🔍' : '📋'}</span>
-          <h3 style={{ marginTop: '1rem', fontWeight: 700 }}>
+        <div className="glass-card animate-fade-in" style={{ padding: '2.5rem 1.5rem', textAlign: 'center' }}>
+          <span style={{ fontSize: '2.5rem' }}>{activeFilter ? '🔍' : '📋'}</span>
+          <h3 style={{ marginTop: '0.75rem', fontWeight: 700, fontSize: '1.05rem' }}>
             {activeFilter ? `No ${activeFilter.toLowerCase()} jobs` : 'No jobs tracked yet'}
           </h3>
-          <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem', fontSize: '0.85rem' }}>
             {activeFilter
               ? 'Try a different filter or add new jobs'
               : 'Click "Add Job" to start tracking your applications'}
@@ -223,35 +240,61 @@ const Dashboard = () => {
         <div style={{ display: 'grid', gap: '1rem' }} className="stagger-children">
           {filteredJobs.map((job) => (
             <div key={job._id} className="glass-card" style={{ padding: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem' }}>
-                <div style={{ flex: 1, minWidth: '200px' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700 }}>{job.role}</h3>
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.15rem' }}>{job.company}</p>
+              {/* Job header row */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  gap: '0.75rem',
+                }}
+              >
+                {/* Job info */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 700, wordBreak: 'break-word' }}>{job.role}</h3>
+                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.15rem' }}>{job.company}</p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <select
-                    className="form-select"
-                    value={job.status}
-                    onChange={(e) => handleStatusChange(job._id, e.target.value)}
-                    style={{ padding: '0.35rem 2rem 0.35rem 0.6rem', fontSize: '0.8rem', minWidth: 'auto' }}
+
+                {/* Status badge — visible on all screens */}
+                <span className={`badge ${BADGE_MAP[job.status]}`} style={{ flexShrink: 0 }}>
+                  {job.status}
+                </span>
+              </div>
+
+              {/* Action buttons — full width row on mobile */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  flexWrap: 'wrap',
+                  marginTop: '0.75rem',
+                }}
+              >
+                <select
+                  className="form-select"
+                  value={job.status}
+                  onChange={(e) => handleStatusChange(job._id, e.target.value)}
+                  style={{ padding: '0.35rem 2rem 0.35rem 0.6rem', fontSize: '0.8rem', minWidth: 'auto', flex: '1 1 auto', maxWidth: '160px' }}
+                >
+                  {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                {/* View Insights button — shown if job has keywords or questions */}
+                {(job.keywords?.length > 0 || job.questions?.length > 0) && (
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => toggleInsights(job._id)}
+                    title="View Insights"
+                    style={{
+                      background: expandedJobId === job._id ? 'rgba(99, 102, 241, 0.15)' : undefined,
+                      borderColor: expandedJobId === job._id ? 'rgba(99, 102, 241, 0.35)' : undefined,
+                      color: expandedJobId === job._id ? '#a5b4fc' : undefined,
+                    }}
                   >
-                    {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                  {/* View Insights button — shown if job has keywords or questions */}
-                  {(job.keywords?.length > 0 || job.questions?.length > 0) && (
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => toggleInsights(job._id)}
-                      title="View Insights"
-                      style={{
-                        background: expandedJobId === job._id ? 'rgba(99, 102, 241, 0.15)' : undefined,
-                        borderColor: expandedJobId === job._id ? 'rgba(99, 102, 241, 0.35)' : undefined,
-                        color: expandedJobId === job._id ? '#a5b4fc' : undefined,
-                      }}
-                    >
-                      {expandedJobId === job._id ? '🔽' : '💡'} Insights
-                    </button>
-                  )}
+                    {expandedJobId === job._id ? '🔽' : '💡'} Insights
+                  </button>
+                )}
+                <div style={{ display: 'flex', gap: '0.35rem', marginLeft: 'auto' }}>
                   <button className="btn btn-secondary btn-sm" onClick={() => openEditModal(job)} title="Edit">✏️</button>
                   <button className="btn btn-danger btn-sm" onClick={() => handleDelete(job._id)} title="Delete">🗑️</button>
                 </div>
@@ -259,11 +302,11 @@ const Dashboard = () => {
 
               {/* Keywords preview (always shown if present) */}
               {job.keywords?.length > 0 && expandedJobId !== job._id && (
-                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginTop: '0.75rem' }}>
                   {job.keywords.slice(0, 5).map((kw, i) => (
                     <span key={i} style={{
-                      padding: '0.15rem 0.6rem',
-                      fontSize: '0.72rem',
+                      padding: '0.15rem 0.55rem',
+                      fontSize: '0.7rem',
                       background: 'rgba(20, 184, 166, 0.12)',
                       color: 'var(--accent-secondary)',
                       border: '1px solid rgba(20, 184, 166, 0.25)',
@@ -272,7 +315,7 @@ const Dashboard = () => {
                     }}>{kw}</span>
                   ))}
                   {job.keywords.length > 5 && (
-                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', alignSelf: 'center' }}>
                       +{job.keywords.length - 5} more
                     </span>
                   )}
@@ -338,7 +381,7 @@ const Dashboard = () => {
                 </div>
               )}
 
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
+              <div style={{ fontSize: '0.73rem', color: 'var(--text-muted)', marginTop: '0.75rem' }}>
                 Added {new Date(job.createdAt).toLocaleDateString()}
               </div>
             </div>
@@ -352,12 +395,22 @@ const Dashboard = () => {
           style={{
             position: 'fixed', inset: 0, zIndex: 100,
             background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1rem',
           }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowModal(false); }}
         >
-          <div className="glass-card animate-slide-up" style={{ width: '100%', maxWidth: '480px', padding: '2rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem' }}>
+          <div
+            className="glass-card animate-slide-up"
+            style={{
+              width: '100%',
+              maxWidth: '480px',
+              padding: '1.75rem',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1.25rem' }}>
               {editingId ? 'Edit Job' : 'Add New Job'}
             </h2>
             {error && (

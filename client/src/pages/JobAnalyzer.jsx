@@ -66,7 +66,7 @@ const JobAnalyzer = () => {
       </div>
 
       {/* Input Section */}
-      <form onSubmit={handleAnalyze} className="glass-card animate-slide-up" style={{ padding: '2rem', marginBottom: '2rem' }}>
+      <form onSubmit={handleAnalyze} className="glass-card animate-slide-up" style={{ padding: 'clamp(1.25rem, 4vw, 2rem)', marginBottom: '2rem' }}>
         <div className="form-group">
           <label className="form-label" htmlFor="jd-input">Job Description</label>
           <textarea
@@ -205,15 +205,15 @@ const JobAnalyzer = () => {
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                <div className="form-group" style={{ flex: '1 1 140px', minWidth: '0' }}>
                   <label className="form-label" htmlFor="save-company">Company</label>
                   <input className="form-input" id="save-company" placeholder="Google" value={saveForm.company} onChange={(e) => setSaveForm({ ...saveForm, company: e.target.value })} />
                 </div>
-                <div className="form-group" style={{ flex: 1, minWidth: '150px' }}>
+                <div className="form-group" style={{ flex: '1 1 140px', minWidth: '0' }}>
                   <label className="form-label" htmlFor="save-role">Role</label>
                   <input className="form-input" id="save-role" placeholder="SWE Intern" value={saveForm.role} onChange={(e) => setSaveForm({ ...saveForm, role: e.target.value })} />
                 </div>
-                <button className="btn btn-primary btn-sm" onClick={handleSave} disabled={saving} id="btn-save-analysis" style={{ height: 'fit-content' }}>
+                <button className="btn btn-primary btn-sm" onClick={handleSave} disabled={saving} id="btn-save-analysis" style={{ height: 'fit-content', flexShrink: 0 }}>
                   {saving ? 'Saving...' : 'Save'}
                 </button>
               </div>

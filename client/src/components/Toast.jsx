@@ -10,12 +10,14 @@ const Toast = ({ toasts, removeToast }) => {
       style={{
         position: 'fixed',
         top: '80px',
-        right: '1.5rem',
+        right: '1rem',
+        left: 'auto',
         zIndex: 200,
         display: 'flex',
         flexDirection: 'column',
         gap: '0.75rem',
         pointerEvents: 'none',
+        maxWidth: 'calc(100vw - 2rem)',
       }}
     >
       {toasts.map((toast) => (
@@ -34,8 +36,8 @@ const Toast = ({ toasts, removeToast }) => {
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
             fontSize: '0.88rem',
             fontWeight: 500,
-            minWidth: '280px',
-            maxWidth: '420px',
+            minWidth: '240px',
+            maxWidth: '100%',
             cursor: 'pointer',
             transition: 'all 0.3s ease',
             ...(toast.type === 'success'
