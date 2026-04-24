@@ -23,6 +23,11 @@ const Dashboard = () => {
   const [error, setError] = useState('');
   const [activeFilter, setActiveFilter] = useState(null);
   const [expandedJobId, setExpandedJobId] = useState(null);
+  const [tailorModal, setTailorModal] = useState({ isOpen: false, job: null });
+  const [userProfile, setUserProfile] = useState('');
+  const [tailorResult, setTailorResult] = useState(null);
+  const [isTailoring, setIsTailoring] = useState(false);
+  const [tailorError, setTailorError] = useState('');
   const { toasts, addToast, removeToast } = useToast();
 
   const fetchJobs = async () => {
@@ -113,6 +118,28 @@ const Dashboard = () => {
 
   const toggleInsights = (jobId) => {
     setExpandedJobId((prev) => (prev === jobId ? null : jobId));
+  };
+
+  const handleTailor = async () => {
+    if (!userProfile.trim()) {
+      return setTailorError('Please enter your profile/skills summary');
+    }
+    setTailorError('');
+    setIsTailoring(true);
+    setTailorResult(null);
+
+    try {
+      const { data } = await API.post('/resume/tailor', {
+        userProfile,
+        jobDescription: tailorModal.job.jobDescription,
+      });
+      setTailorResult(data);
+      addToast('Resume tailored successfully!', 'success');
+    } catch (err) {
+      setTailorError(err.response?.data?.message || 'Failed to tailor resume');
+    } finally {
+      setIsTailoring(false);
+    }
   };
 
   // Stats
@@ -294,6 +321,19 @@ const Dashboard = () => {
                     {expandedJobId === job._id ? '🔽' : '💡'} Insights
                   </button>
                 )}
+                {job.jobDescription && (
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => {
+                      setTailorModal({ isOpen: true, job });
+                      setTailorResult(null);
+                      setTailorError('');
+                    }}
+                    title="Tailor Resume"
+                  >
+                    ✨ Tailor Resume
+                  </button>
+                )}
                 <div style={{ display: 'flex', gap: '0.35rem', marginLeft: 'auto' }}>
                   <button className="btn btn-secondary btn-sm" onClick={() => openEditModal(job)} title="Edit">✏️</button>
                   <button className="btn btn-danger btn-sm" onClick={() => handleDelete(job._id)} title="Delete">🗑️</button>
@@ -446,6 +486,103 @@ const Dashboard = () => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Tailor Resume Modal */}
+      {tailorModal.isOpen && (
+        <div
+          style={{
+            position: 'fixed', inset: 0, zIndex: 100,
+            background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '1rem',
+          }}
+          onClick={(e) => { if (e.target === e.currentTarget) setTailorModal({ isOpen: false, job: null }); }}
+        >
+          <div
+            className="glass-card animate-slide-up"
+            style={{
+              width: '100%',
+              maxWidth: '600px',
+              padding: '1.75rem',
+              maxHeight: '90vh',
+              overflowY: 'auto',
+            }}
+          >
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span>✨</span> Tailor Resume for {tailorModal.job?.company}
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+              AI will align your profile with the job description.
+            </p>
+            
+            {tailorError && (
+              <div style={{ padding: '0.75rem 1rem', marginBottom: '1rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 'var(--radius-sm)', color: '#f87171', fontSize: '0.85rem' }}>
+                {tailorError}
+              </div>
+            )}
+
+            {!tailorResult ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="user-profile">Your Profile / Skills Summary</label>
+                  <textarea
+                    className="form-textarea"
+                    id="user-profile"
+                    placeholder="e.g., Final year CS student with experience in React, Node.js, and Python. Built a full-stack e-commerce app..."
+                    value={userProfile}
+                    onChange={(e) => setUserProfile(e.target.value)}
+                    rows="4"
+                  />
+                </div>
+                
+                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+                  <button className="btn btn-primary" onClick={handleTailor} disabled={isTailoring} style={{ flex: 1 }}>
+                    {isTailoring ? 'AI is writing...' : 'Generate Tailored Resume'}
+                  </button>
+                  <button className="btn btn-secondary" onClick={() => setTailorModal({ isOpen: false, job: null })} style={{ flex: 0 }} disabled={isTailoring}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div style={{ background: 'rgba(99, 102, 241, 0.05)', padding: '1.25rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Professional Summary</h4>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                    {tailorResult.summary}
+                  </p>
+                  
+                  <h4 style={{ fontSize: '0.9rem', fontWeight: 700, marginTop: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Experience Bullets</h4>
+                  <ul style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {tailorResult.bullets.map((bullet, idx) => (
+                      <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        <span style={{ color: 'var(--text-primary)' }}>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      const text = `SUMMARY\n${tailorResult.summary}\n\nEXPERIENCE BULLETS\n${tailorResult.bullets.map(b => '• ' + b).join('\n')}`;
+                      navigator.clipboard.writeText(text);
+                      addToast('Copied to clipboard!', 'success');
+                    }}
+                    style={{ flex: 1 }}
+                  >
+                    📋 Copy to Clipboard
+                  </button>
+                  <button className="btn btn-secondary" onClick={() => setTailorModal({ isOpen: false, job: null })} style={{ flex: 0 }}>
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

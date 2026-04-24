@@ -18,6 +18,7 @@ app.use(express.json());
 // --------------- Routes ---------------
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/jobs', require('./routes/jobRoutes'));
+app.use('/api/resume', require('./routes/resumeRoutes'));
 
 // Health check
 app.get('/', (req, res) => {
