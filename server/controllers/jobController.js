@@ -98,11 +98,12 @@ const deleteJob = async (req, res) => {
 };
 
 // @desc    Analyze a job description (mock — uses aiService stub)
+//          If jobId is provided, persist the analysis to that job record.
 // @route   POST /api/jobs/analyze
 // @access  Private
 const analyzeJob = async (req, res) => {
   try {
-    const { jobDescription } = req.body;
+    const { jobDescription, jobId } = req.body;
 
     if (!jobDescription || jobDescription.trim().length === 0) {
       return res
@@ -112,6 +113,19 @@ const analyzeJob = async (req, res) => {
 
     // Delegate to the AI service (currently returns mock data)
     const analysis = await aiService.analyze(jobDescription);
+
+    // If a jobId was provided, persist the analysis results to the job record
+    if (jobId) {
+      const job = await Job.findById(jobId);
+      if (job && job.user.toString() === req.user._id.toString()) {
+        job.keywords = analysis.atsKeywords || [];
+        job.questions = analysis.interviewQuestions || [];
+        job.jobDescription = jobDescription;
+        await job.save();
+        // Return the analysis along with the updated job
+        return res.json({ ...analysis, job });
+      }
+    }
 
     res.json(analysis);
   } catch (error) {

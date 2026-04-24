@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import API from '../api/axios';
 import Spinner from '../components/Spinner';
+import Toast, { useToast } from '../components/Toast';
 
 const JobAnalyzer = () => {
   const [jobDescription, setJobDescription] = useState('');
@@ -8,8 +9,9 @@ const JobAnalyzer = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [saveSuccess, setSaveSuccess] = useState('');
   const [saveForm, setSaveForm] = useState({ company: '', role: '' });
+  const [saved, setSaved] = useState(false);
+  const { toasts, addToast, removeToast } = useToast();
 
   const handleAnalyze = async (e) => {
     e.preventDefault();
@@ -17,10 +19,11 @@ const JobAnalyzer = () => {
     setError('');
     setResults(null);
     setLoading(true);
-    setSaveSuccess('');
+    setSaved(false);
     try {
       const { data } = await API.post('/jobs/analyze', { jobDescription });
       setResults(data);
+      addToast('Analysis complete!', 'success');
     } catch (err) {
       setError(err.response?.data?.message || 'Analysis failed');
     } finally {
@@ -42,8 +45,9 @@ const JobAnalyzer = () => {
         keywords: results?.atsKeywords || [],
         questions: results?.interviewQuestions || [],
       });
-      setSaveSuccess('Saved to your Dashboard!');
+      setSaved(true);
       setSaveForm({ company: '', role: '' });
+      addToast('Analysis saved to Dashboard!', 'success');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to save');
     } finally {
@@ -53,6 +57,8 @@ const JobAnalyzer = () => {
 
   return (
     <div className="page-container">
+      <Toast toasts={toasts} removeToast={removeToast} />
+
       {/* Header */}
       <div className="page-header">
         <h1 className="page-title">Job Analyzer</h1>
@@ -193,9 +199,9 @@ const JobAnalyzer = () => {
             <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <span style={{ fontSize: '1.2rem' }}>💾</span> Save to Job Tracker
             </h3>
-            {saveSuccess ? (
+            {saved ? (
               <div style={{ padding: '0.75rem 1rem', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: 'var(--radius-sm)', color: '#34d399', fontSize: '0.85rem' }}>
-                ✅ {saveSuccess}
+                ✅ Saved to your Dashboard — keywords and questions are stored!
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
