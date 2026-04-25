@@ -7,7 +7,7 @@ const getModel = () => {
     throw new Error('GEMINI_API_KEY is not configured. Please add your API key to the .env file.');
   }
   const genAI = new GoogleGenerativeAI(apiKey);
-  return genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 };
 
 // @desc    Generate a tailored resume using Gemini AI
